@@ -1,0 +1,52 @@
+@using mh4edit
+@model mh4webedit.Models.EquipBoxViewModel
+
+<h2>Equipment Box</h2>
+
+@if (TempData["EquipBoxMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["EquipBoxMessage"]</div>
+}
+
+<div class="equip-grid">
+    <table class="table table-borderless">
+        @for (int r = 0; r < Model.RowsPerPage; r++)
+        {
+            <tr>
+                @for (int c = 0; c < Model.ItemsPerRow; c++)
+                {
+                    int idx = r * Model.ItemsPerRow + c;
+                    if (idx < Model.Items.Count)
+                    {
+                        var item = Model.Items[idx];
+                        <td class="equip-cell">
+                            <a href="@Url.Action("Index", "EquipmentBox", new { index = item.Index })">
+                                <img class="equip-thumb" src="@item.ImageUrl" alt="@item.Name" />
+                            </a>
+                            <div class="index-num">@(((Model.Page - 1) * Model.ItemsPerPage) + idx + 1)</div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="equip-cell"></td>
+                    }
+                }
+            </tr>
+        }
+    </table>
+</div>
+
+<div class="d-flex justify-content-between">
+    <div>
+        @if (Model.Page > 1)
+        {
+            <a asp-action="Index" asp-route-page="@(Model.Page - 1)" class="btn btn-secondary">Previous</a>
+        }
+    </div>
+    <div>
+        @if ((Model.Page * Model.ItemsPerPage) < Model.TotalItems)
+        {
+            <a asp-action="Index" asp-route-page="@(Model.Page + 1)" class="btn btn-primary">Next</a>
+        }
+    </div>
+</div>

@@ -26,8 +26,7 @@
                 <tr>
                     <td>@(((Model.Page - 1) * Model.ItemsPerPage) + i + 1)</td>
                     <td>
-                        <select data-index="@i" class="form-select item-select" aria-label="Item select @i"></select>
-                        <input type="hidden" asp-for="Items[i].ItemId" class="item-id-hidden" />
+                        <select data-index="@i" data-current="@Model.Items[i].ItemId" class="form-select item-select" aria-label="Item select @i"></select>
                     </td>
                     <td>
                         <input asp-for="Items[i].Quantity" class="form-control" />
@@ -68,15 +67,12 @@
         document.querySelectorAll('.item-select').forEach(function(sel){
             sel.innerHTML = opts;
             const idx = sel.getAttribute('data-index');
-            // try to find the hidden input by traversing the DOM (safer than relying on asp-for attribute)
-            const hidden = sel.parentElement.querySelector('.item-id-hidden');
-            if(hidden){
-                const val = hidden.value;
-                if(val !== ''){
-                    const opt = sel.querySelector('option[value="'+val+'"]');
-                    if(opt) opt.selected = true;
-                }
-                sel.addEventListener('change', function(e){ hidden.value = sel.value; });
+            // ensure the select will bind to Items[idx].ItemId on post
+            sel.name = 'Items['+idx+'].ItemId';
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
             }
         });
     })();

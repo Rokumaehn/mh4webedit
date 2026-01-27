@@ -1,0 +1,119 @@
+@model mh4webedit.Models.EquipEditorArmorViewModel
+
+<h2>Armor Editor</h2>
+
+<form asp-action="EditArmor" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Index" />
+    <input type="hidden" asp-for="Type" />
+
+    <div class="mb-3">
+        <label class="form-label">Armor</label>
+        <select asp-for="ID" class="form-select">
+            @{
+                string[] list = Model.Type switch
+                {
+                    1 => MonHunEquipStatic.allEqpChest,
+                    2 => MonHunEquipStatic.allEqpArms,
+                    3 => MonHunEquipStatic.allEqpWaist,
+                    4 => MonHunEquipStatic.allEqpLegs,
+                    5 => MonHunEquipStatic.allEqpHeads,
+                    _ => MonHunEquipStatic.allEqpChest
+                };
+
+                for (int i = 0; i < list.Length; i++)
+                {
+                    @if(Model.ID == i)
+                    {
+                        <option value="@i" selected>@list[i]</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@list[i]</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label class="form-label">Slot 1 (Jewel)</label>
+                <select asp-for="Slot1" class="form-select jewel-select" data-current="@Model.Slot1"></select>
+            <div class="form-check mt-1"><input asp-for="Slot1Fixed" class="form-check-input" /> <label class="form-check-label">Fixed</label></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Slot 2 (Jewel)</label>
+                <select asp-for="Slot2" class="form-select jewel-select" data-current="@Model.Slot2"></select>
+            <div class="form-check mt-1"><input asp-for="Slot2Fixed" class="form-check-input" /> <label class="form-check-label">Fixed</label></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Slot 3 (Jewel)</label>
+                <select asp-for="Slot3" class="form-select jewel-select" data-current="@Model.Slot3"></select>
+            <div class="form-check mt-1"><input asp-for="Slot3Fixed" class="form-check-input" /> <label class="form-check-label">Fixed</label></div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <label class="form-label">Upgrade</label>
+            <input asp-for="Upgrade" type="number" min="0" max="12" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Resistances</label>
+            <input asp-for="Resistances" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Defense</label>
+            <input asp-for="Defense" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Num Slots</label>
+            <input asp-for="NumSlots" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-check mt-3">
+        <input asp-for="Polished" class="form-check-input" /> <label class="form-check-label">Polished</label>
+    </div>
+    <div class="form-check">
+        <input asp-for="Glow" class="form-check-input" /> <label class="form-check-label">Glow</label>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <label class="form-label">Rarity</label>
+            <input asp-for="Rarity" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Polish Req</label>
+            <input asp-for="PolishReq" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Save</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Back</a>
+    </div>
+</form>
+
+<template id="jewel-options" style="display:none">
+    @foreach(var s in MonHunEquipStatic.Slot1Values)
+    {
+        <option value="@s.Slot1">@s.Display</option>
+    }
+</template>
+
+<script>
+    (function(){
+        const tmpl = document.getElementById('jewel-options').innerHTML;
+        document.querySelectorAll('select.jewel-select').forEach(function(sel){
+            sel.innerHTML = tmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+    })();
+</script>
