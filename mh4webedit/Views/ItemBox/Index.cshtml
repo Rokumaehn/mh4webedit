@@ -1,0 +1,83 @@
+@using mh4edit
+@model mh4webedit.Models.ItemBoxViewModel
+
+<h2>Item Box</h2>
+
+@if (TempData["ItemBoxMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["ItemBoxMessage"]</div>
+}
+
+<form asp-action="Index" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Page" />
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Item</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Items.Count; i++)
+            {
+                <tr>
+                    <td>@(((Model.Page - 1) * Model.ItemsPerPage) + i + 1)</td>
+                    <td>
+                        <select data-index="@i" class="form-select item-select" aria-label="Item select @i"></select>
+                        <input type="hidden" asp-for="Items[i].ItemId" class="item-id-hidden" />
+                    </td>
+                    <td>
+                        <input asp-for="Items[i].Quantity" class="form-control" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between">
+        <div>
+            @if (Model.Page > 1)
+            {
+                <a asp-action="Index" asp-route-page="@(Model.Page - 1)" class="btn btn-secondary">Previous</a>
+            }
+        </div>
+        <div>
+            <button type="submit" class="btn btn-success">Save</button>
+            @if ((Model.Page * Model.ItemsPerPage) < Model.TotalItems)
+            {
+                <a asp-action="Index" asp-route-page="@(Model.Page + 1)" class="btn btn-primary ms-2">Next</a>
+            }
+        </div>
+    </div>
+</form>
+
+<template id="item-options" style="display:none">
+    @for (int k = 0; k < MonHunItem.Names.Length; k++)
+    {
+        var name = MonHunItem.Names[k];
+        <option value="@k">@name</option>
+    }
+</template>
+
+<script>
+    (function(){
+        const opts = document.getElementById('item-options').innerHTML;
+        document.querySelectorAll('.item-select').forEach(function(sel){
+            sel.innerHTML = opts;
+            const idx = sel.getAttribute('data-index');
+            // try to find the hidden input by traversing the DOM (safer than relying on asp-for attribute)
+            const hidden = sel.parentElement.querySelector('.item-id-hidden');
+            if(hidden){
+                const val = hidden.value;
+                if(val !== ''){
+                    const opt = sel.querySelector('option[value="'+val+'"]');
+                    if(opt) opt.selected = true;
+                }
+                sel.addEventListener('change', function(e){ hidden.value = sel.value; });
+            }
+        });
+    })();
+</script>

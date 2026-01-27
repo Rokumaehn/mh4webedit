@@ -1,0 +1,39 @@
+@model mh4webedit.Models.CharacterViewModel
+
+@{
+    ViewData["Title"] = "Character";
+}
+
+<h2>Character</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<form asp-action="Index" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="HunterRank" class="form-label"></label>
+        <input asp-for="HunterRank" type="number" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="HrPoints" class="form-label"></label>
+        <input asp-for="HrPoints" type="number" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Funds" class="form-label"></label>
+        <input asp-for="Funds" type="number" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
