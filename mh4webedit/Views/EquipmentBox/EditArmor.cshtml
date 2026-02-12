@@ -6,6 +6,7 @@
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Index" />
     <input type="hidden" asp-for="Type" />
+    <input type="hidden" asp-for="ReturnPage" />
 
     <div class="mb-3">
         <label class="form-label">Armor</label>
@@ -93,7 +94,8 @@
 
     <div class="mt-4">
         <button type="submit" class="btn btn-success">Save</button>
-        <a asp-action="Index" class="btn btn-secondary ms-2">Back</a>
+        <a asp-action="EditType" asp-route-page="@Model.ReturnPage" asp-route-index="@Model.Index" class="btn btn-outline-primary ms-2">Change Type</a>
+        <a asp-action="Index" asp-route-page="@Model.ReturnPage" class="btn btn-secondary ms-2">Back</a>
     </div>
 </form>
 

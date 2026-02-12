@@ -37,7 +37,7 @@ public class UploadController : Controller
             using (var ms = new MemoryStream())
             {
                 await file.CopyToAsync(ms);
-                var save = new MonHunSave(ms);
+                var save = new MonHunSave(ms, file.FileName ?? "user");
                 save.FileName = file.FileName ?? string.Empty;
                 _cacheService.SetSavegame(save);
             }

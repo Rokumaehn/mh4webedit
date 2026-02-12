@@ -120,6 +120,28 @@ namespace mh4edit
             }
         }
 
+        public string SharpnessValueName
+        {
+            get
+            {
+                if(IsRanged)
+                {
+                    if(IsBowgun)
+                    {
+                        return "Magazine Sizes";
+                    }
+                    else
+                    {
+                        return "Coatings";
+                    }
+                }
+                else
+                {
+                    return "Sharpness";
+                }
+            }
+        }
+
         public List<MonHunEquipStatic.UpgradeValueType> UpgradeValueList
         {
             get

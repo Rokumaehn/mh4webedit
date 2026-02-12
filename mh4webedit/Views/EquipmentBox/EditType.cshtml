@@ -1,0 +1,133 @@
+@model mh4webedit.Models.EquipmentModel
+
+<h2>Edit Equipment Type</h2>
+
+<form asp-action="EditType" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Index" />
+    <input type="hidden" asp-for="ReturnPage" />
+
+    <div class="mb-3">
+        <label class="form-label">Type</label>
+        <select asp-for="Type" class="form-select" id="type-select">
+            @for (int i = 0; i < MonHunEquip.types.Length; i++)
+            {
+                if (Model.Type == i)
+                {
+                    <option value="@i" selected>@MonHunEquip.types[i]</option>
+                }
+                else
+                {
+                    <option value="@i">@MonHunEquip.types[i]</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">ID</label>
+        <select asp-for="ID" class="form-select" id="id-select" data-current="@Model.ID">
+            @{ 
+                string[] list = Model.Type switch
+                {
+                    0 => new string[] {"(None)"},
+                    1 => MonHunEquipStatic.allEqpChest,
+                    2 => MonHunEquipStatic.allEqpArms,
+                    3 => MonHunEquipStatic.allEqpWaist,
+                    4 => MonHunEquipStatic.allEqpLegs,
+                    5 => MonHunEquipStatic.allEqpHeads,
+                    6 => MonHunEquipStatic.allEqpTalisman,
+                    7 => MonHunEquipStatic.allEqpGreatsword,
+                    8 => MonHunEquipStatic.allEqpSns,
+                    9 => MonHunEquipStatic.allEqpHammer,
+                    10 => MonHunEquipStatic.allEqpLance,
+                    11 => MonHunEquipStatic.allEqpLbg,
+                    12 => MonHunEquipStatic.allEqpHbg,
+                    13 => MonHunEquipStatic.allEqpLongswods,
+                    14 => MonHunEquipStatic.allEqpSwitchAxe,
+                    15 => MonHunEquipStatic.allEqpGunlance,
+                    16 => MonHunEquipStatic.allEqpBow,
+                    17 => MonHunEquipStatic.allEqpDualblade,
+                    18 => MonHunEquipStatic.allEqpHuntinghorn,
+                    19 => MonHunEquipStatic.allEqpInsectglaive,
+                    20 => MonHunEquipStatic.allEqpChargeblade,
+                    _ => new string[] {"(None)"}
+                };
+
+                for (int i = 0; i < list.Length; i++)
+                {
+                    if (Model.ID == i)
+                    {
+                        <option value="@i" selected>@list[i]</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@list[i]</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Save</button>
+        <a asp-action="Index" asp-route-page="@Model.ReturnPage" class="btn btn-secondary ms-2">Back</a>
+    </div>
+</form>
+
+@{
+    var idLists = new[] {
+        new string[] {"(None)"},
+        MonHunEquipStatic.allEqpChest,
+        MonHunEquipStatic.allEqpArms,
+        MonHunEquipStatic.allEqpWaist,
+        MonHunEquipStatic.allEqpLegs,
+        MonHunEquipStatic.allEqpHeads,
+        MonHunEquipStatic.allEqpTalisman,
+        MonHunEquipStatic.allEqpGreatsword,
+        MonHunEquipStatic.allEqpSns,
+        MonHunEquipStatic.allEqpHammer,
+        MonHunEquipStatic.allEqpLance,
+        MonHunEquipStatic.allEqpLbg,
+        MonHunEquipStatic.allEqpHbg,
+        MonHunEquipStatic.allEqpLongswods,
+        MonHunEquipStatic.allEqpSwitchAxe,
+        MonHunEquipStatic.allEqpGunlance,
+        MonHunEquipStatic.allEqpBow,
+        MonHunEquipStatic.allEqpDualblade,
+        MonHunEquipStatic.allEqpHuntinghorn,
+        MonHunEquipStatic.allEqpInsectglaive,
+        MonHunEquipStatic.allEqpChargeblade
+    };
+
+    var idListsJson = System.Text.Json.JsonSerializer.Serialize(idLists);
+}
+
+<script>
+    (function(){
+        const ID_LISTS = @Html.Raw(idListsJson);
+        const typeSel = document.getElementById('type-select');
+        const idSel = document.getElementById('id-select');
+
+        function populateIdList(type, preserve){
+            const idx = parseInt(type, 10);
+            const list = (idx >=0 && idx < ID_LISTS.length) ? ID_LISTS[idx] : ["(None)"];
+            idSel.innerHTML = list.map(function(t,i){ return '<option value="'+i+'">'+t.replace(/</g,'&lt;')+'</option>'; }).join('');
+            if(preserve){
+                const cur = idSel.getAttribute('data-current');
+                if(cur && idSel.querySelector('option[value="'+cur+'"]')){
+                    idSel.value = cur;
+                } else {
+                    idSel.selectedIndex = 0;
+                }
+            } else {
+                idSel.selectedIndex = 0;
+            }
+        }
+
+        typeSel.addEventListener('change', function(e){ populateIdList(e.target.value, false); });
+
+        // initialize (preserve current model ID)
+        populateIdList(typeSel.value || typeSel.getAttribute('data-current') || '@Model.Type', true);
+    })();
+</script>

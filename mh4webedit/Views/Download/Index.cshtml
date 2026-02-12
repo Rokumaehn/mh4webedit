@@ -1,0 +1,13 @@
+@model mh4edit.MonHunSave
+
+<h2>Download Savegame</h2>
+
+<div class="mb-3">
+    <label class="form-label">File</label>
+    <div>@(string.IsNullOrEmpty(Model.FileName) ? "(unnamed)" : Model.FileName)</div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Download" class="btn btn-primary">Download Savegame</a>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary ms-2">Back</a>
+</div>

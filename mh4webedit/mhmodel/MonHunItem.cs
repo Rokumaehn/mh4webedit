@@ -53,7 +53,7 @@ namespace mh4edit
         static MonHunItem()
         {
             List<string> items = new();
-            using(StreamReader sr = new StreamReader("lists\\itemlist.txt"))
+            using(StreamReader sr = new StreamReader("lists" + Path.DirectorySeparatorChar + "itemlist.txt"))
             {
                 while(!sr.EndOfStream)
                 {

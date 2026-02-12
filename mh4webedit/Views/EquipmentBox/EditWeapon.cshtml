@@ -1,0 +1,403 @@
+@model mh4webedit.Models.EquipEditorWeaponViewModel
+
+<h2>Weapon Editor</h2>
+
+<form asp-action="EditWeapon" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Index" />
+    <input type="hidden" asp-for="Type" />
+    <input type="hidden" asp-for="ReturnPage" />
+
+    <div class="mb-3">
+        <label class="form-label">Weapon</label>
+        <select asp-for="ID" class="form-select">
+            @{
+                string[] list = Model.Type switch
+                {
+                    7 => MonHunEquipStatic.allEqpGreatsword,
+                    8 => MonHunEquipStatic.allEqpSns,
+                    9 => MonHunEquipStatic.allEqpHammer,
+                    10 => MonHunEquipStatic.allEqpLance,
+                    11 => MonHunEquipStatic.allEqpLbg,
+                    12 => MonHunEquipStatic.allEqpHbg,
+                    13 => MonHunEquipStatic.allEqpLongswods,
+                    14 => MonHunEquipStatic.allEqpSwitchAxe,
+                    15 => MonHunEquipStatic.allEqpGunlance,
+                    16 => MonHunEquipStatic.allEqpBow,
+                    17 => MonHunEquipStatic.allEqpDualblade,
+                    18 => MonHunEquipStatic.allEqpHuntinghorn,
+                    19 => MonHunEquipStatic.allEqpInsectglaive,
+                    20 => MonHunEquipStatic.allEqpChargeblade,
+                    _ => MonHunEquipStatic.allEqpGreatsword
+                };
+
+                for (int i = 0; i < list.Length; i++)
+                {
+                    @if(Model.ID == i)
+                    {
+                        <option value="@i" selected>@list[i]</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@list[i]</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label class="form-label">Slot 1 (Jewel)</label>
+                <select asp-for="Slot1" class="form-select jewel-select" data-current="@Model.Slot1"></select>
+            <div class="form-check mt-1"><input asp-for="Slot1Fixed" class="form-check-input" /> <label class="form-check-label">Fixed</label></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Slot 2 (Jewel)</label>
+                <select asp-for="Slot2" class="form-select jewel-select" data-current="@Model.Slot2"></select>
+            <div class="form-check mt-1"><input asp-for="Slot2Fixed" class="form-check-input" /> <label class="form-check-label">Fixed</label></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Slot 3 (Jewel)</label>
+                <select asp-for="Slot3" class="form-select jewel-select" data-current="@Model.Slot3"></select>
+            <div class="form-check mt-1"><input asp-for="Slot3Fixed" class="form-check-input" /> <label class="form-check-label">Fixed</label></div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <label class="form-label">@Model.UpgradeValueName</label>
+            <select asp-for="Upgrade" class="form-select upgrade-select" data-current="@Model.Upgrade"></select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">@Model.SharpnessValueName</label>
+            <select asp-for="Sharpness" class="form-select sharpness-select" data-current="@Model.Sharpness"></select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">@Model.ModifierValueName</label>
+            <select asp-for="Modifier" class="form-select modifier-select" data-current="@Model.Modifier" style="font-family: Consolas, 'Courier New', monospace;"></select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">@Model.SpecialValueName</label>
+            <select asp-for="Special" class="form-select special-select" data-current="@Model.Special"></select>
+        </div>
+    </div>
+
+    <div class="form-check mt-3">
+        <input asp-for="Polished" class="form-check-input" /> <label class="form-check-label">Polished</label>
+    </div>
+    <div class="form-check">
+        <input asp-for="Glow" class="form-check-input" /> <label class="form-check-label">Glow</label>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-3">
+            <label class="form-label">Honing</label>
+            <select asp-for="Honing" class="form-select honing-select" data-current="@Model.Honing"></select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Num Slots</label>
+            <select asp-for="NumSlots" class="form-select slots-select" data-current="@Model.NumSlots"></select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Rarity</label>
+            <select asp-for="Rarity" class="form-select rarity-select" data-current="@Model.Rarity"></select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Polish Req</label>
+            <select asp-for="PolishReq" class="form-select polish-select" data-current="@Model.PolishReq"></select>
+        </div>
+    </div>
+
+    @if(Model.IsGlaive)
+    {
+        <div class="row mt-3">
+            <div class="col-md-3">
+                <label class="form-label">Kinsect Level</label>
+                <select asp-for="KinsectLevel" class="form-select kinsect-select" data-current="@Model.KinsectLevel"></select>
+            </div>
+        </div>
+    }
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <label class="form-label">Element Type</label>
+            <select asp-for="ElementType" class="form-select element-types-select" data-current="@Model.ElementType"></select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Element Value</label>
+            <select asp-for="ElementValue" class="form-select element-values-select" data-current="@Model.ElementValue"></select>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Save</button>
+        <a asp-action="EditType" asp-route-page="@Model.ReturnPage" asp-route-index="@Model.Index" class="btn btn-outline-primary ms-2">Change Type</a>
+        <a asp-action="Index" asp-route-page="@Model.ReturnPage" class="btn btn-secondary ms-2">Back</a>
+    </div>
+</form>
+
+<template id="jewel-options" style="display:none">
+    @foreach(var s in MonHunEquipStatic.Slot1Values)
+    {
+        <option value="@s.Slot1">@s.Display</option>
+    }
+</template>
+
+<template id="upgrade-options" style="display:none">
+    @foreach(var u in Model.UpgradeValues)
+    {
+        <option value="@u.Upgrade">@u.Display</option>
+    }
+</template>
+
+<template id="sharpness-options" style="display:none">
+    @foreach(var s in Model.SharpnessValues)
+    {
+        <option value="@s.Sharpness">@s.Display</option>
+    }
+</template>
+
+<template id="modifier-options" style="display:none">
+    @foreach(var m in Model.ModifierValues)
+    {
+        <option value="@m.Modifier">@Html.Raw(System.Net.WebUtility.HtmlEncode(m.Display).Replace(" ", "&nbsp;"))</option>
+    }
+</template>
+
+<template id="special-options" style="display:none">
+    @foreach(var sp in Model.SpecialValues)
+    {
+        <option value="@sp.Special">@sp.Display</option>
+    }
+</template>
+
+<template id="honing-options" style="display:none">
+    @foreach(var h in MonHunEquipStatic.HoningValues)
+    {
+        <option value="@h.Honing">@h.Display</option>
+    }
+</template>
+
+<template id="slots-options" style="display:none">
+    @foreach(var s in MonHunEquipStatic.NumSlotsValues)
+    {
+        <option value="@s.NumSlots">@s.Display</option>
+    }
+</template>
+
+<template id="rarity-options" style="display:none">
+    @foreach(var r in MonHunEquipStatic.RarityValues)
+    {
+        <option value="@r.Rarity">@r.Display</option>
+    }
+</template>
+
+<template id="polish-options" style="display:none">
+    @foreach(var p in MonHunEquipStatic.PolishReqValues)
+    {
+        <option value="@p.PolishReq">@p.Display</option>
+    }
+</template>
+
+<template id="kinsect-options" style="display:none">
+    @foreach(var k in MonHunEquipStatic.KinsectLevels)
+    {
+        <option value="@k.KinsectLevel">@k.Display</option>
+    }
+</template>
+
+<template id="element-types-options" style="display:none">
+    @foreach(var e in MonHunEquipStatic.ElementTypes)
+    {
+        <option value="@e.ElementType">@e.Display</option>
+    }
+</template>
+
+@{
+    int subKind = Model.Type switch
+    {
+        7 => 2,
+        8 => 0,
+        9 => 1,
+        10 => 1,
+        11 => -1,
+        12 => -1,
+        13 => 1,
+        14 => 1,
+        15 => 1,
+        16 => 0,
+        17 => 0,
+        18 => 2,
+        19 => 0,
+        20 => 1,
+        _ => -1
+    };
+}
+
+@{
+    var elementValuesData = MonHunEquipStatic.ElementValues
+        .Select(list => list.Select(ev => new { Value = ev.ElementValue, Display = ev.Display }).ToArray())
+        .ToArray();
+    var elementValuesJson = System.Text.Json.JsonSerializer.Serialize(elementValuesData);
+}
+
+<script>
+    (function(){
+        const jewelTmpl = document.getElementById('jewel-options').innerHTML;
+        document.querySelectorAll('select.jewel-select').forEach(function(sel){
+            sel.innerHTML = jewelTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const upgTmpl = document.getElementById('upgrade-options').innerHTML;
+        document.querySelectorAll('select.upgrade-select').forEach(function(sel){
+            sel.innerHTML = upgTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const sharpTmpl = document.getElementById('sharpness-options').innerHTML;
+        document.querySelectorAll('select.sharpness-select').forEach(function(sel){
+            sel.innerHTML = sharpTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const modTmpl = document.getElementById('modifier-options').innerHTML;
+        document.querySelectorAll('select.modifier-select').forEach(function(sel){
+            sel.innerHTML = modTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const spTmpl = document.getElementById('special-options').innerHTML;
+        document.querySelectorAll('select.special-select').forEach(function(sel){
+            sel.innerHTML = spTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const honingTmpl = document.getElementById('honing-options').innerHTML;
+        document.querySelectorAll('select.honing-select').forEach(function(sel){
+            sel.innerHTML = honingTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const slotsTmpl = document.getElementById('slots-options').innerHTML;
+        document.querySelectorAll('select.slots-select').forEach(function(sel){
+            sel.innerHTML = slotsTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const rarityTmpl = document.getElementById('rarity-options').innerHTML;
+        document.querySelectorAll('select.rarity-select').forEach(function(sel){
+            sel.innerHTML = rarityTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const polishTmpl = document.getElementById('polish-options').innerHTML;
+        document.querySelectorAll('select.polish-select').forEach(function(sel){
+            sel.innerHTML = polishTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const kinTmpl = document.getElementById('kinsect-options').innerHTML;
+        document.querySelectorAll('select.kinsect-select').forEach(function(sel){
+            sel.innerHTML = kinTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const elemTypesTmpl = document.getElementById('element-types-options').innerHTML;
+        document.querySelectorAll('select.element-types-select').forEach(function(sel){
+            sel.innerHTML = elemTypesTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const subKind = @subKind;
+
+        const ELEMENT_VALUES = @Html.Raw(elementValuesJson);
+
+        function updateElementValuesForType(elementType, preserve){
+            const et = parseInt(elementType, 10);
+            const elementKind = (et === 6 || et === 7 || et === 8 || et === 9) ? 1 : 0;
+            const idx = (subKind >= 0) ? (subKind + 3 * elementKind) : -1;
+            const arr = (idx >= 0 && idx < ELEMENT_VALUES.length) ? ELEMENT_VALUES[idx] : [];
+
+            document.querySelectorAll('select.element-values-select').forEach(function(sel){
+                sel.innerHTML = arr.map(function(x){ return '<option value="'+x.Value+'">'+x.Display+'</option>'; }).join('');
+                if(sel.options.length > 0){
+                    if(preserve){
+                        const cur = sel.getAttribute('data-current');
+                        if(cur && sel.querySelector('option[value="'+cur+'"]')){
+                            sel.value = cur;
+                        } else {
+                            const modelVal = '@(Model.ElementValue)';
+                            if(modelVal && sel.querySelector('option[value="'+modelVal+'"]')){
+                                sel.value = modelVal;
+                            } else {
+                                sel.selectedIndex = 0;
+                            }
+                        }
+                    } else {
+                        sel.selectedIndex = 0;
+                    }
+                } else {
+                    sel.selectedIndex = -1;
+                }
+            });
+        }
+
+        document.querySelectorAll('select.element-types-select').forEach(function(sel){
+            sel.addEventListener('change', function(e){
+                updateElementValuesForType(e.target.value, false);
+            });
+        });
+
+        // initialize element values from currently selected element type (preserve existing model value)
+        const firstElemSel = document.querySelector('select.element-types-select');
+        if(firstElemSel){
+            updateElementValuesForType(firstElemSel.value || firstElemSel.getAttribute('data-current') || '@(Model.ElementType)', true);
+        }
+    })();
+</script>

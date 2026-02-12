@@ -20,8 +20,15 @@
                     {
                         var item = Model.Items[idx];
                         <td class="equip-cell">
-                            <a href="@Url.Action("Index", "EquipmentBox", new { index = item.Index })">
-                                <img class="equip-thumb" src="@item.ImageUrl" alt="@item.Name" />
+                            <a href="@Url.Action("Index", "EquipmentBox", new { page = Model.Page, index = item.Index })">
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img class="equip-thumb" src="@item.ImageUrl" alt="@item.Name" />
+                                }
+                                else
+                                {
+                                    <div class="equip-thumb equip-thumb-placeholder" aria-hidden="true"></div>
+                                }
                             </a>
                             <div class="index-num">@(((Model.Page - 1) * Model.ItemsPerPage) + idx + 1)</div>
                         </td>

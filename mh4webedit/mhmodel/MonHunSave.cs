@@ -14,10 +14,10 @@ namespace mh4edit
       public byte[] Buffer = [];
       public ushort Key = 0;
 
-      public MonHunSave(MemoryStream input)
+      public MonHunSave(MemoryStream input, string fileName = "memfile")
       {
          input.Seek(0, SeekOrigin.Begin);
-         FileName = "<memory>";
+         FileName = fileName;
          
          BinaryReader reader = new BinaryReader(input);
 

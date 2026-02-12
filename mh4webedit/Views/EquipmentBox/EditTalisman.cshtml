@@ -1,0 +1,173 @@
+@model mh4webedit.Models.EquipEditorTalismanViewModel
+
+<h2>Talisman Editor</h2>
+
+<form asp-action="EditTalisman" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Index" />
+    <input type="hidden" asp-for="Type" />
+    <input type="hidden" asp-for="ReturnPage" />
+
+    <div class="mb-3">
+        <label class="form-label">Talisman</label>
+        <select asp-for="ID" class="form-select">
+            @{ var list = MonHunEquipStatic.allEqpTalisman; for (int i = 0; i < list.Length; i++) { if (Model.ID == i) { <option value="@i" selected>@list[i]</option> } else { <option value="@i">@list[i]</option> } } }
+        </select>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <label class="form-label">Slot 1 (Jewel)</label>
+            <select asp-for="Slot1" class="form-select jewel-select" data-current="@Model.Slot1"></select>
+            <div class="form-check mt-1"><input asp-for="Slot1Fixed" class="form-check-input" /> <label class="form-check-label">Fixed</label></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Slot 2 (Jewel)</label>
+            <select asp-for="Slot2" class="form-select jewel-select" data-current="@Model.Slot2"></select>
+            <div class="form-check mt-1"><input asp-for="Slot2Fixed" class="form-check-input" /> <label class="form-check-label">Fixed</label></div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Slot 3 (Jewel)</label>
+            <select asp-for="Slot3" class="form-select jewel-select" data-current="@Model.Slot3"></select>
+            <div class="form-check mt-1"><input asp-for="Slot3Fixed" class="form-check-input" /> <label class="form-check-label">Fixed</label></div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <label class="form-label">Num Slots</label>
+            <select asp-for="NumSlots" class="form-select slots-select" data-current="@Model.NumSlots"></select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Skill 1</label>
+            <select asp-for="Skill1ID" class="form-select skill1id-select" data-current="@Model.Skill1ID"></select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Skill 1 Amount</label>
+            <select asp-for="Skill1Amount" class="form-select skill1amount-select" data-current="@Model.Skill1Amount"></select>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <label class="form-label">Skill 2</label>
+            <select asp-for="Skill2ID" class="form-select skill2id-select" data-current="@Model.Skill2ID"></select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Skill 2 Amount</label>
+            <select asp-for="Skill2Amount" class="form-select skill2amount-select" data-current="@Model.Skill2Amount"></select>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Save</button>
+        <a asp-action="EditType" asp-route-page="@Model.ReturnPage" asp-route-index="@Model.Index" class="btn btn-outline-primary ms-2">Change Type</a>
+        <a asp-action="Index" asp-route-page="@Model.ReturnPage" class="btn btn-secondary ms-2">Back</a>
+    </div>
+</form>
+
+<template id="jewel-options" style="display:none">
+    @foreach(var s in MonHunEquipStatic.Slot1Values)
+    {
+        <option value="@s.Slot1">@s.Display</option>
+    }
+</template>
+
+<template id="slots-options" style="display:none">
+    @foreach(var s in MonHunEquipStatic.NumSlotsValues)
+    {
+        <option value="@s.NumSlots">@s.Display</option>
+    }
+</template>
+
+<template id="skill1id-options" style="display:none">
+    @foreach(var s in MonHunEquipStatic.Skill1IdValues)
+    {
+        <option value="@s.Skill1Id">@s.Display</option>
+    }
+</template>
+
+<template id="skill2id-options" style="display:none">
+    @foreach(var s in MonHunEquipStatic.Skill2IdValues)
+    {
+        <option value="@s.Skill2Id">@s.Display</option>
+    }
+</template>
+
+<template id="skill1amount-options" style="display:none">
+    @foreach(var s in MonHunEquipStatic.Skill1AmountValues)
+    {
+        <option value="@s.Skill1Amount">@s.Display</option>
+    }
+</template>
+
+<template id="skill2amount-options" style="display:none">
+    @foreach(var s in MonHunEquipStatic.Skill2AmountValues)
+    {
+        <option value="@s.Skill2Amount">@s.Display</option>
+    }
+</template>
+
+<script>
+    (function(){
+        const jewelTmpl = document.getElementById('jewel-options').innerHTML;
+        document.querySelectorAll('select.jewel-select').forEach(function(sel){
+            sel.innerHTML = jewelTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const slotsTmpl = document.getElementById('slots-options').innerHTML;
+        document.querySelectorAll('select.slots-select').forEach(function(sel){
+            sel.innerHTML = slotsTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const s1idTmpl = document.getElementById('skill1id-options').innerHTML;
+        document.querySelectorAll('select.skill1id-select').forEach(function(sel){
+            sel.innerHTML = s1idTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const s2idTmpl = document.getElementById('skill2id-options').innerHTML;
+        document.querySelectorAll('select.skill2id-select').forEach(function(sel){
+            sel.innerHTML = s2idTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const s1amtTmpl = document.getElementById('skill1amount-options').innerHTML;
+        document.querySelectorAll('select.skill1amount-select').forEach(function(sel){
+            sel.innerHTML = s1amtTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+
+        const s2amtTmpl = document.getElementById('skill2amount-options').innerHTML;
+        document.querySelectorAll('select.skill2amount-select').forEach(function(sel){
+            sel.innerHTML = s2amtTmpl;
+            const cur = sel.getAttribute('data-current');
+            if(cur !== null && cur !== ''){
+                const opt = sel.querySelector('option[value="'+cur+'"]');
+                if(opt) opt.selected = true;
+            }
+        });
+    })();
+</script>

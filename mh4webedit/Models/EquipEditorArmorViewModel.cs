@@ -5,7 +5,6 @@ namespace mh4webedit.Models;
 
 public class EquipEditorArmorViewModel : EquipmentModel
 {
-    public int Type { get; set; }
     [Required]
     [Display(Name = "Upgrade Level")]
     [Range(0, 12)]
