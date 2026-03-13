@@ -10,31 +10,7 @@
 
     <div class="mb-3">
         <label class="form-label">Armor</label>
-        <select asp-for="ID" class="form-select">
-            @{
-                string[] list = Model.Type switch
-                {
-                    1 => MonHunEquipStatic.allEqpChest,
-                    2 => MonHunEquipStatic.allEqpArms,
-                    3 => MonHunEquipStatic.allEqpWaist,
-                    4 => MonHunEquipStatic.allEqpLegs,
-                    5 => MonHunEquipStatic.allEqpHeads,
-                    _ => MonHunEquipStatic.allEqpChest
-                };
-
-                for (int i = 0; i < list.Length; i++)
-                {
-                    @if(Model.ID == i)
-                    {
-                        <option value="@i" selected>@list[i]</option>
-                    }
-                    else
-                    {
-                        <option value="@i">@list[i]</option>
-                    }
-                }
-            }
-        </select>
+        <select asp-for="ID" id="ID" class="form-select" data-current="@Model.ID"></select>
     </div>
 
     <div class="row">
@@ -99,13 +75,6 @@
     </div>
 </form>
 
-<template id="jewel-options" style="display:none">
-    @foreach(var s in MonHunEquipStatic.Slot1Values)
-    {
-        <option value="@s.Slot1">@s.Display</option>
-    }
-</template>
-
 <template id="resistance-options" style="display:none">
     @foreach(var r in MonHunEquipStatic.ResistancesValues)
     {
@@ -148,76 +117,5 @@
     }
 </template>
 
-<script>
-    (function(){
-        const jewelTmpl = document.getElementById('jewel-options').innerHTML;
-        document.querySelectorAll('select.jewel-select').forEach(function(sel){
-            sel.innerHTML = jewelTmpl;
-            const cur = sel.getAttribute('data-current');
-            if(cur !== null && cur !== ''){
-                const opt = sel.querySelector('option[value="'+cur+'"]');
-                if(opt) opt.selected = true;
-            }
-        });
+<script src="~/js/edit-armor.js" asp-append-version="true"></script>
 
-        const resTmpl = document.getElementById('resistance-options').innerHTML;
-        document.querySelectorAll('select.resistance-select').forEach(function(sel){
-            sel.innerHTML = resTmpl;
-            const cur = sel.getAttribute('data-current');
-            if(cur !== null && cur !== ''){
-                const opt = sel.querySelector('option[value="'+cur+'"]');
-                if(opt) opt.selected = true;
-            }
-        });
-
-        const defTmpl = document.getElementById('defense-options').innerHTML;
-        document.querySelectorAll('select.defense-select').forEach(function(sel){
-            sel.innerHTML = defTmpl;
-            const cur = sel.getAttribute('data-current');
-            if(cur !== null && cur !== ''){
-                const opt = sel.querySelector('option[value="'+cur+'"]');
-                if(opt) opt.selected = true;
-            }
-        });
-
-        const upgTmpl = document.getElementById('upgrade-options').innerHTML;
-        document.querySelectorAll('select.upgrade-select').forEach(function(sel){
-            sel.innerHTML = upgTmpl;
-            const cur = sel.getAttribute('data-current');
-            if(cur !== null && cur !== ''){
-                const opt = sel.querySelector('option[value="'+cur+'"]');
-                if(opt) opt.selected = true;
-            }
-        });
-
-        const slotsTmpl = document.getElementById('slots-options').innerHTML;
-        document.querySelectorAll('select.slots-select').forEach(function(sel){
-            sel.innerHTML = slotsTmpl;
-            const cur = sel.getAttribute('data-current');
-            if(cur !== null && cur !== ''){
-                const opt = sel.querySelector('option[value="'+cur+'"]');
-                if(opt) opt.selected = true;
-            }
-        });
-
-        const rarityTmpl = document.getElementById('rarity-options').innerHTML;
-        document.querySelectorAll('select.rarity-select').forEach(function(sel){
-            sel.innerHTML = rarityTmpl;
-            const cur = sel.getAttribute('data-current');
-            if(cur !== null && cur !== ''){
-                const opt = sel.querySelector('option[value="'+cur+'"]');
-                if(opt) opt.selected = true;
-            }
-        });
-
-        const polishTmpl = document.getElementById('polish-options').innerHTML;
-        document.querySelectorAll('select.polish-select').forEach(function(sel){
-            sel.innerHTML = polishTmpl;
-            const cur = sel.getAttribute('data-current');
-            if(cur !== null && cur !== ''){
-                const opt = sel.querySelector('option[value="'+cur+'"]');
-                if(opt) opt.selected = true;
-            }
-        });
-    })();
-</script>

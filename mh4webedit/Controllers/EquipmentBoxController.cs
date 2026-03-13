@@ -65,7 +65,7 @@ public class EquipmentBoxController : Controller
                     Polished = armor.Polished,
                     Glow = armor.Glow,
                     NumSlots = armor.NumSlots,
-                    Rarity = armor.Rarity,
+                    Rarity = (byte)(armor.Rarity + 1), // adjust for 0-based in save vs 1-based in model
                     PolishReq = armor.PolishReq,
                     ReturnPage = page.ToString(),
                 };
@@ -129,7 +129,7 @@ public class EquipmentBoxController : Controller
                     Polished = weapon.Polished,
                     Glow = weapon.Glow,
                     NumSlots = weapon.NumSlots,
-                    Rarity = weapon.Rarity,
+                    Rarity = (byte)(weapon.Rarity + 1), // adjust for 0-based in save vs 1-based in model
                     PolishReq = weapon.PolishReq,
                     ReturnPage = page.ToString(),
                 };
@@ -228,7 +228,7 @@ public class EquipmentBoxController : Controller
             armor.Polished = model.Polished;
             armor.Glow = model.Glow;
             armor.NumSlots = model.NumSlots;
-            armor.Rarity = model.Rarity;
+            armor.Rarity = (byte)(model.Rarity - 1); // adjust for 1-based in model vs 0-based in save
             armor.PolishReq = model.PolishReq;
 
             _cacheService.SetSavegame(save);
@@ -297,7 +297,7 @@ public class EquipmentBoxController : Controller
             weapon.Polished = model.Polished;
             weapon.Glow = model.Glow;
             weapon.NumSlots = model.NumSlots;
-            weapon.Rarity = model.Rarity;
+            weapon.Rarity = (byte)(model.Rarity - 1); // adjust for 1-based in model vs 0-based in save
             weapon.PolishReq = model.PolishReq;
 
             weapon.ElementType = model.ElementType;
@@ -310,4 +310,5 @@ public class EquipmentBoxController : Controller
 
         return string.IsNullOrEmpty(model.ReturnPage) ? RedirectToAction("Index", new { page = 1 }) : RedirectToAction("Index", new { page = model.ReturnPage });
     }
+
 }

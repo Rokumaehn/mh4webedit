@@ -53,27 +53,62 @@
     </div>
 </form>
 
-<template id="item-options" style="display:none">
-    @for (int k = 0; k < MonHunItem.Names.Length; k++)
-    {
-        var name = MonHunItem.Names[k];
-        <option value="@k">@name</option>
-    }
-</template>
-
 <script>
     (function(){
-        const opts = document.getElementById('item-options').innerHTML;
-        document.querySelectorAll('.item-select').forEach(function(sel){
-            sel.innerHTML = opts;
-            const idx = sel.getAttribute('data-index');
-            // ensure the select will bind to Items[idx].ItemId on post
-            sel.name = 'Items['+idx+'].ItemId';
-            const cur = sel.getAttribute('data-current');
-            if(cur !== null && cur !== ''){
-                const opt = sel.querySelector('option[value="'+cur+'"]');
-                if(opt) opt.selected = true;
+        const CACHE_KEY = 'mh4_item_names_v1';
+
+        function buildOptions(names){
+            return names.map(function(n,i){
+                return '<option value="'+i+'">'+(n === null ? '' : n.replace(/</g,'&lt;').replace(/>/g,'&gt;'))+'</option>';
+            }).join('');
+        }
+
+        function populate(optsHtml){
+            document.querySelectorAll('.item-select').forEach(function(sel){
+                sel.innerHTML = optsHtml;
+                const idx = sel.getAttribute('data-index');
+                sel.name = 'Items['+idx+'].ItemId';
+                const cur = sel.getAttribute('data-current');
+                if(cur !== null && cur !== ''){
+                    const opt = sel.querySelector('option[value="'+cur+'"]');
+                    if(opt) opt.selected = true;
+                }
+            });
+        }
+
+        try{
+            var cachedRaw = localStorage.getItem(CACHE_KEY);
+            var cached = null;
+            if(cachedRaw){
+                cached = JSON.parse(cachedRaw);
+                if(cached && cached.names){
+                    // optimistically populate from cache while we validate with server
+                    populate(buildOptions(cached.names));
+                }
             }
-        });
+        }catch(e){
+            console.warn('Item names cache parse failed', e);
+            cached = null;
+        }
+
+        var headers = { };
+        if(cached && cached.etag){ headers['If-None-Match'] = cached.etag; }
+
+        fetch('@Url.Action("ItemNames","ItemBox")', { headers: headers })
+            .then(function(r){
+                if(r.status === 304){
+                    // not modified - keep cached names
+                    return null;
+                }
+                if(!r.ok) throw new Error('Network response not ok');
+                var newEtag = r.headers.get('ETag');
+                return r.json().then(function(names){ return { names: names, etag: newEtag }; });
+            })
+            .then(function(result){
+                if(result === null) return; // cached still valid
+                try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ etag: result.etag, names: result.names })); }catch(e){}
+                populate(buildOptions(result.names));
+            })
+            .catch(function(err){ console.error('Failed to load item names', err); });
     })();
 </script>
